@@ -16,22 +16,28 @@ class User extends AppModel {
                 'message' => 'Name should be between 5 and 20 characters!'
             )
         ),
+        'email'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'Email is required!'
+            )
+        ),
         'password' => array(
             'required'=> array(
                 'rule'=> array('notBlank'),
                 'message'=> 'Password is required!'
             ),
-            'match'=> array(
-                'rule'=> array('compareFields', 'password', 'confirm password'),
-                'message'=> 'Password does not match'
-            )
+            // 'match'=> array(
+            //     'rule'=> array('password', 'confirm password'),
+            //     'message'=> 'Password does not match'
+            // )
+        ),
+        'confirm password'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'Confirm Password is required!'
             ),
-            'confirm password'=> array(
-                'required'=> array(
-                    'rule'=> array('notBlank'),
-                    'message'=> 'Confirm Password is required!'
-                ),
-            )
+        )
     );
 
     public function beforeSave($options = array()) {
@@ -42,12 +48,12 @@ class User extends AppModel {
         return true;
     }
 
-    public function compareFields($field1, $field2) {
-        if (isset($this->data[$this->alias][$field1]) && isset($this->data[$this->alias][$field2])) {
-            return $this->data[$this->alias][$field1] === $this->data[$this->alias][$field2];
-        }
-        return false;
-    }
+    // public function compareFields($field1, $field2) {
+    //     if (isset($this->data[$this->alias][$field1]) && isset($this->data[$this->alias][$field2])) {
+    //         return $this->data[$this->alias][$field1] === $this->data[$this->alias][$field2];
+    //     }
+    //     return false;
+    // }
     
 }
 ?>
