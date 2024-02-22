@@ -3,6 +3,26 @@ App::uses("AppController","Controller");
 
 class UsersController extends AppController {
     var $helpers = array( 'Html' );
+
+    public $components = array(
+        'Flash',
+        'Session',
+        'Auth' => array(
+            'loginRedirect' => array('controller' => 'users', 'action' => 'home'),
+            'logoutRedirect' => array('controller' => 'users', 'action' => 'login'),
+            'authenticate' => array(
+                'Form' => array(
+                    'fields' => array('username' => 'email') // Adjust as per your field names
+                )
+            ),
+            'authError' => 'You are not authorized to access that location.'
+        )
+    );
+
+    public function index() {
+        return $this->redirect( array('action'=> 'home') );
+    }
+
     public function register() {
         if($this->request->is('post')) {
             try {
@@ -22,15 +42,45 @@ class UsersController extends AppController {
             }
         }
     }
+    // UsersController.php
     public function login() {
+        if ($this->request->is('post')) {
+            if ($this->Auth->login()) {
+                $userId = $this->Auth->user('id');
+                $this->User->id = $userId;
+                $this->User->saveField('last_login', date('Y-m-d H:i:s'));
+
+                return $this->redirect($this->Auth->redirectUrl());
+            } else {
+                $this->Flash->error(__('Invalid username or password, try again'));
+            }
+        }
         $this->render('login');
     }
 
     public function logout() {
-        
+        $this->Auth->logout();
+        $this->redirect(array('action'=> 'login'));
     }
 
     public function thankyou() {
         $this->render('thankyou');
     }
-}
+
+    public function home() {
+        $name = $this->Auth->user('name');
+        $this->set('name', $name);
+
+        $this->render('home');
+    }
+
+
+    public function profile() {
+        $name = $this->Auth->user('name');
+        $this->set('name', $name);
+        $userId = $this->Auth->user('id');
+        $this->loadModel('User');
+        $user = $this->User->findById($userId);
+        $this->set('user', $user);
+    }
+}    

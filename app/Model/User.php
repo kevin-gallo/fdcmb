@@ -45,6 +45,11 @@ class User extends AppModel {
             $this->data[$this->alias]['password'] = Security::hash($this->data[$this->alias]['password'], 'sha1', true);
         }
 
+        if(!$this->id) {
+            $this->data[$this->alias]['joined'] = date('Y-m-d H:i:s');
+            $this->data[$this->alias]['last_login_time'] = date('Y-m-d H:i:s');
+        }
+
         return true;
     }
 
@@ -55,5 +60,10 @@ class User extends AppModel {
     //     return false;
     // }
     
+    // public function updateLastLogin($userId) {
+    //     $user = $this->findById($userId);
+    //     $user[$this->alias]['last_login'] = date('Y-m-d H:i:s');
+    //     return $this->save($user);
+    // }
 }
 ?>

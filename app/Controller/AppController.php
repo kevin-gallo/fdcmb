@@ -31,5 +31,15 @@ App::uses('Controller', 'Controller');
  * @link		https://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-    // public $components = array('Session', 'Auth');
+    public $components = array('Session', 'Auth');
+
+    public function beforeFilter() {
+        // Allow registration and thank you page
+        $this->Auth->allow('register', 'thankyou', 'login');
+
+        // Redirect logged-in users trying to access registration or thank you page
+        if ($this->Auth->loggedIn() && in_array($this->request->params['action'], array('login', 'register', 'thankyou'))) {
+            $this->redirect(array('controller' => 'users', 'action' => 'home'));
+        }
+    }
 }
