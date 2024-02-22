@@ -83,4 +83,37 @@ class UsersController extends AppController {
         $user = $this->User->findById($userId);
         $this->set('user', $user);
     }
+
+    public function edit_profile() {
+        $name = $this->Auth->user('name');
+        $this->set('name', $name);
+    
+        $userId = $this->Auth->user('id');
+        if ($this->request->is('post') || $this->request->is('put')) {
+            // Load the existing user record
+            $user = $this->User->findById($userId);
+            if (!$user) {
+                throw new NotFoundException(__('Invalid user'));
+            }
+    
+            // Update the user data
+            $this->User->id = $userId;
+            if ($this->User->save($this->request->data)) {
+                $this->Flash->success(__('Profile updated successfully!'));
+                return $this->redirect(array('action' => 'profile'));
+            } else {
+                $this->Flash->error(__('Failed to update profile!'));
+            }
+        } else {
+            // Fetch user data and pass it to the view
+            $user = $this->User->findById($userId);
+            $this->set('user', $user);
+    
+            $this->request->data = $user;
+        }
+    }
+
+    public function update_profile_pic() {
+        
+    }
 }    
