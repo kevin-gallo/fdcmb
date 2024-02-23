@@ -19,8 +19,8 @@
 <script>
     $(document).ready(function() {
         $('#UserRegisterForm').submit(function(e) {
-            var password = $('#UserPassword').val();
-            var confirmPassword = $('#UserConfirmPassword').val();
+            let password = $('#UserPassword').val();
+            let confirmPassword = $('#UserConfirmPassword').val();
             
             if (password !== confirmPassword) {
                 $('.error-message').show();

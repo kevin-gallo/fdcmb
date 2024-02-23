@@ -15,14 +15,14 @@ class Message extends AppModel {
         )
     );
 
-    public $validate = array(
-        'receiver'=> array(
-            'rule'=> 'notBlank',
-            'message'=> 'Please add a recipient'
-        ),
-        'message' => array(
-            'rule' => 'notBlank',
-            'message' => 'Message content is required'
-        ),
-    );
+    // public $validate = array(
+    //     'receiver'=> array(
+    //         'rule'=> 'notBlank',
+    //         'message'=> 'Please add a recipient'
+    //     ),
+    //     'message' => array(
+    //         'rule' => 'notBlank',
+    //         'message' => 'Message content is required'
+    //     ),
+    // );
 }
