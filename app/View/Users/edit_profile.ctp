@@ -18,15 +18,22 @@
 
 <div style="margin-top: 22px;">
     <?php
-    echo $this->Form->create('User', array('type' => 'file'));
+    echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'edit_profile'), 'type' => 'file')); 
 
-    // if(!empty($user['User']['profile_picture'])) {
-    //     echo $this->Html->image($user['User']['profile_picture'], array('id'=> 'preview-image', 'style' => 'width:100px;height:100px;'));
-    // } else {
-    //     echo $this->Html->image('/img/default_profile_pic.jpg', array('id'=> 'preview-image'));
-    // }
-    // echo $this->Form->input('User.profile_picture', array('type' => 'file', 'label' => 'Profile Picture', 'id' => 'profile-picture'));
-    
+    if(!empty($user['User']['profile_picture'])) {
+        echo $this->Html->image($user['User']['profile_picture'], array('id'=> 'preview-image', 'style' => 'width:100px;height:100px;'));
+    } else {
+        echo $this->Html->image('/img/default_profile_pic.jpg', array('id'=> 'preview-image'));
+    }
+    echo $this->Form->input('User.profile_picture', array(
+        'type' => 'file',
+        'name' => 'data[User][profile_picture]',
+        'class' => 'form-control-file',
+        'accept' => '.jpg,.jpeg,.gif,.png',
+        'label' => 'Profile Picture',
+        'id' => 'profile-picture'
+    ));
+     
     ?>
     <p><?php echo $this->Form->input('User.name', array('label' => 'Name')); ?></p>
     <p><?php echo $this->Form->input('User.email', array('label' => 'Email'));?></p>
@@ -48,23 +55,21 @@
             dateFormat: 'yy-mm-dd' // Adjust the date format as needed
         });
 
-        // Preview uploaded image
-        // $('#profile-picture').change(function() {
-        //     var input = this;
-        //     var url = window.URL || window.webkitURL;
-        //     var file = input.files[0];
-        //     var img = new Image();
-        //     var imgURL = url.createObjectURL(file);
-        //     img.src = imgURL;
-        //     img.onload = function() {
-        //         // Display preview of the image
-        //         $('#preview-image').attr('src', imgURL);
-        //     };
-        // });
+        $(document).ready(() => {
+            $('#profile-picture').change(function () {
+                const file = this.files[0];
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = function (event) {
+                        $('#preview-image').attr('src', event.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
     });
 </script>
 
 <div>
-    <!-- Image preview -->
     <img id="preview-image" src="#" alt="Preview Image" style="width: 100px; height: 100px; margin-top: 10px; display: none;">
 </div>

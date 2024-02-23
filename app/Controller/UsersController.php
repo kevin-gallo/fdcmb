@@ -96,13 +96,38 @@ class UsersController extends AppController {
                 throw new NotFoundException(__('Invalid user'));
             }
     
+            // Handle file upload for profile picture
+            if (!empty($this->request->data['User']['profile_picture']['name'])) {
+                $file = $this->request->data['User']['profile_picture'];
+                $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $file_new_name = $userId . '_' . time() . '.' . $file_ext;
+                $file_destination = WWW_ROOT . 'img' . DS . 'profile_pics' . DS . $file_new_name;
+    
+                if (move_uploaded_file($file['tmp_name'], $file_destination)) {
+                    // Save the new profile picture path to the user record
+                    $this->request->data['User']['profile_picture'] = 'profile_pics/' . $file_new_name;
+                } else {
+                    $this->Flash->error(__('Failed to upload profile picture.'));
+                }
+            } else {
+                $this->request->data['User']['profile_picture'] = $user['User']['profile_picture'];
+            }
+    
             // Update the user data
             $this->User->id = $userId;
-            if ($this->User->save($this->request->data)) {
-                $this->Flash->success(__('Profile updated successfully!'));
-                return $this->redirect(array('action' => 'profile'));
-            } else {
-                $this->Flash->error(__('Failed to update profile!'));
+            try {
+                if ($this->User->save($this->request->data)) {
+                    $this->Flash->success(__('Profile updated successfully!'));
+                    return $this->redirect(array('action' => 'profile'));
+                } else {
+                    $this->Flash->error(__('Failed to update profile!'));
+                }
+            } catch (PDOException $e) {
+                if ($e->getCode() == 23000) {
+                    $this->Flash->error(__('Email already exists! Please use a different email.'));
+                } else {
+                    $this->Flash->error($e->getMessage());
+                }
             }
         } else {
             // Fetch user data and pass it to the view
@@ -111,9 +136,5 @@ class UsersController extends AppController {
     
             $this->request->data = $user;
         }
-    }
-
-    public function update_profile_pic() {
-        
     }
 }    

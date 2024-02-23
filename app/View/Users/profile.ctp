@@ -16,7 +16,8 @@
         <div style="width:100px;height:100px;">
         <?php
             if (!empty($user['User']['profile_picture'])) {
-                echo $this->Html->image($user['User']['profile_picture']);
+                $image = $user['User']['profile_picture'];
+                echo $this->Html->image($image, array('style'=> 'width:100px;height:100px;'));
             } else {
                 echo $this->Html->image('/img/default_profile_pic.jpg', array('alt' => 'Default Profile Picture'));
             }

@@ -37,7 +37,26 @@ class User extends AppModel {
                 'rule'=> array('notBlank'),
                 'message'=> 'Confirm Password is required!'
             ),
-        )
+        ),
+        'birthdate'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'Birthdate is required!'
+            )
+        ),
+        'gender'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'Birthdate is required!'
+            )
+        ),
+        'hobby'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'Birthdate is required!'
+            )
+        ),
+
     );
 
     public function beforeSave($options = array()) {
