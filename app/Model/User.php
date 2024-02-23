@@ -32,7 +32,7 @@ class User extends AppModel {
             //     'message'=> 'Password does not match'
             // )
         ),
-        'confirm password'=> array(
+        'confirm_password'=> array(
             'required'=> array(
                 'rule'=> array('notBlank'),
                 'message'=> 'Confirm Password is required!'
@@ -56,7 +56,18 @@ class User extends AppModel {
                 'message'=> 'Birthdate is required!'
             )
         ),
-
+        'current_password'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'New Password is required!'
+            ),
+        ),
+        'new_password'=> array(
+            'required'=> array(
+                'rule'=> array('notBlank'),
+                'message'=> 'New Password is required!'
+            ),
+        )
     );
 
     public function beforeSave($options = array()) {

@@ -9,6 +9,7 @@
 <div>
     <?php echo $this->Html->link('Home', 'home') ?>
     <?php echo $this->Html->link('Edit Profile', 'edit_profile') ?>
+    <?php echo $this->Html->link('Change Password', 'change_password') ?>
 </div>
 
 <div style="margin-top: 22px;">
