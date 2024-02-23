@@ -3,6 +3,8 @@ App::uses("AppController","Controller");
 
 class MessagesController extends AppController {
 
+    public $components = array('Flash');
+
     public function index() {
         $user = $this->Auth->user('name');
         $this->set('name', $user);
@@ -16,6 +18,10 @@ class MessagesController extends AppController {
         $this->set('name', $user);
 
         if($this->request->is('post')) {
+            $this->request->data['Message']['sender_id'] = $this->Auth->user('id');
+            $mssg = $this->Message->save($this->request->data);
+            CakeLog::debug($mssg);
+
             if($this->Message->save($this->request->data)) {
                 $this->Flash->success(__('Message sent successfully!'));
                 return $this->redirect(array('action' => 'index'));
@@ -23,8 +29,6 @@ class MessagesController extends AppController {
                 $this->Flash->error(__('Failed to send message!'));
             }
         }
-
-        $this->render('new_message');
     }
 
     public function get_users() {
