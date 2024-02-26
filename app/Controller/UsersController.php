@@ -50,7 +50,7 @@ class UsersController extends AppController {
                 $this->User->id = $userId;
                 $this->User->saveField('last_login', date('Y-m-d H:i:s'));
 
-                return $this->redirect($this->Auth->redirectUrl());
+                return $this->redirect("home");
             } else {
                 $this->Flash->error(__('Invalid username or password, try again'));
             }

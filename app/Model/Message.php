@@ -2,27 +2,20 @@
 App::uses("AppModel","Model");
 
 class Message extends AppModel {
-    public $messageModel = "messages";
-
+    public $useTable = "messages";
     public $belongsTo = array(
-        "sender"=> array(
+        "Sender" => array(
             "className"=> "User",
             "foreignKey" => "sender_id"
         ),
-        "receiver"=> array(
+        "Receiver" => array(
             "className"=> 'User',
             'foreignKey'=> 'receiver_id'
         )
     );
 
-    // public $validate = array(
-    //     'receiver'=> array(
-    //         'rule'=> 'notBlank',
-    //         'message'=> 'Please add a recipient'
-    //     ),
-    //     'message' => array(
-    //         'rule' => 'notBlank',
-    //         'message' => 'Message content is required'
-    //     ),
-    // );
+    public $virtualFields = array(
+        'sender_name' => 'Sender.name',
+        'receiver_name' => 'Receiver.name'
+    );
 }

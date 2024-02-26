@@ -15,7 +15,13 @@
 
 <div style="margin-top: 22px;">
     <?php 
+    
         echo $this->Form->create('Message');
+        echo $this->Form->input('receiver_id', array(
+            'type' => 'hidden', 
+            'id' => 'receiver-hidden',
+            'value' => ''
+        ));
         echo $this->Form->input('receiver', array(
             'id' => 'receiver-input',
             'data-hidden-input' => 'receiver-hidden', // Link the select input to the hidden input
@@ -55,6 +61,12 @@
                     data: data,
                     templateResult: formatUser,
                     minimumInputLength: 1
+                });
+
+                // Update receiver ID field when a user is selected
+                $('#receiver-input').on('select2:select', function (e) {
+                    var data = e.params.data;
+                    $('#receiver-hidden').val(data.id); // Set the selected user's ID as the receiver ID
                 });
             },
             error: function(xhr, status, error) {
