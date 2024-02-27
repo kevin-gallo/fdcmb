@@ -14,25 +14,31 @@
 </div>
 
 <div style="margin-top: 22px;">
-    <div>
-        <!-- Display the message here -->
-        <?php foreach ($message as $msg): ?>
-            <div style="margin-bottom: 20px;">
-                <div style="float: left; margin-right: 10px;">
-                    <?php echo $this->Html->image('profile_pics/' . $msg['receiver']['profile_picture']); ?>
-                </div>
-                <div>
-                    <p><?php echo $msg['Message']['receiver_name']; ?></p>
-                    <p><?php echo $msg['Message']['message']; ?></p>
-                    <p>Sent at: <?php echo $msg['Message']['sent_at']; ?></p>
-                </div>
-                <div style="clear: both;"></div>
-                <div>
-                    <p><?php echo $msg['Message']['sender_name']; ?></p>
-                    <p><?php echo $msg['Message']['message']; ?></p>
-                    <p>Sent at: <?php echo $msg['Message']['sent_at']; ?></p>
-                </div>
-            </div>
+    <h3>Messages</h3>
+    <?php 
+        // debug($contacts)
+    ?>
+    <ul>
+        <?php foreach ($contacts as $contact): ?>
+            <li>
+                <?php if (isset($contact['Receiver']['name'])): ?>
+                    <?php 
+                        $senderId = $contact['Sender']['id'];
+                        $receiverId = $contact['Receiver']['id'];
+                        // $conversationId = $contact['Sender']['id'] . '_' $contact['Receiver']['id'];
+                    ?>
+                    <?php 
+                        echo $this->Html->link(
+                            'Conversation of ' . $contact['Sender']['name'] . ' and ' . $contact['Receiver']['name'], 
+                            array(
+                                'controller' => 'messages',
+                                'action' => 'conversation',
+                                $senderId,
+                                $receiverId
+                        )); 
+                    ?>
+                <?php endif; ?>
+            </li>
         <?php endforeach; ?>
-    </div>
+    </ul>
 </div>
