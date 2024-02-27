@@ -16,26 +16,27 @@
 
 <div style="margin-top: 22px;">
 <div style="margin-bottom: 12px;">
-                <?php 
-
-                    echo $this->Form->create("Message", array(
-                        'url' => array(
-                            'controller'=> 'messages',
-                            'action'=> 'send_message', 
-                            $receiverId, // Receiver ID
-                            $senderId // Sender ID
-                        )));
-                    echo $this->Form->input('Message.message', array('label' => false,'placeholder' => 'Enter your message here...'));
-                    echo $this->Form->button('New Message', array( 'class'=> 'button-1'));
-                    echo $this->Form->end();
-                ?>
-            </div>
-    <div>
-        <?php 
-        
-        // debug($conversation);
-        // debug($userId);
-        ?>
+    <?php 
+        echo $this->Form->create("Message", array(
+            'url' => array(
+                'controller'=> 'messages',
+                'action'=> 'send_message', 
+                $receiverId, // Receiver ID
+                $senderId // Sender ID
+            )));
+        echo $this->Form->input('Message.message', array('label' => false,'placeholder' => 'Enter your message here...'));
+        echo $this->Form->button('New Message', array( 'class'=> 'button-1'));
+        echo $this->Form->end();
+    ?>
+</div>
+<div>
+    <?php 
+        if(count($conversation) > 0) { ?>
+            <button class="delete-conversation">Delete Conversation</button>
+        <?php }
+    ?>
+</div>
+    <div class="conversation">
         <?php foreach ($conversation as $msg): ?>
             <div style="margin-bottom: 20px;display:flex;flex-direction: row;align-items: center;justify-content: flex-end;">
                 <div>
@@ -56,5 +57,41 @@
                 <div style="clear: both;"></div>
             </div>
         <?php endforeach; ?>
+        <?php 
+          if(count($conversation) > 10) { ?>
+            <div style="text-align: center;">
+                <!-- Pagination -->
+                <?php echo $this->Paginator->prev('Show Less'); ?>
+                <?php echo $this->Paginator->next('Show More'); ?>
+            </div>
+          <?php }
+        ?>
     </div>
+    
 </div>
+
+<script>
+    $(document).ready(function() {
+        // Handle delete conversation button click
+        $('.delete-conversation').click(function() {
+            var confirmed = confirm('Are you sure you want to delete this conversation?');
+            if (confirmed) {
+                // Send AJAX request to delete conversation
+                $.ajax({
+                    url: 'http://localhost/fdcmb/messages/deleteConversation/<?php echo $senderId; ?>/<?php echo $receiverId; ?>',
+                    type: 'POST',
+                    success: function(response) {
+                        // Fade out the conversation container
+                        $('.conversation').fadeOut('slow', function() {
+                            $(this).remove();
+                        });
+                        location.reload()
+                    },
+                    error: function() {
+                        alert('Failed to delete conversation. Please try again.');
+                    }
+                });
+            }
+        });
+    });
+</script>

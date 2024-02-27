@@ -32,6 +32,7 @@
 	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 	Router::connect('/messages', array('controller' => 'messages', 'action' => 'index'));
 	Router::connect('/messages/get-users', array('controller' => 'messages', 'action' => 'get_users'));
+	Router::connect('/messages/delete', array('controller' => 'messages', 'action' => 'delete'));
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on
