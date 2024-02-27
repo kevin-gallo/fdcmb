@@ -33,6 +33,7 @@
 	Router::connect('/messages', array('controller' => 'messages', 'action' => 'index'));
 	Router::connect('/messages/get-users', array('controller' => 'messages', 'action' => 'get_users'));
 	Router::connect('/messages/delete', array('controller' => 'messages', 'action' => 'delete'));
+	Router::connect('/messages/search_message', array('controller' => 'messages', 'action' => 'search_message'));
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on

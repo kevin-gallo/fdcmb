@@ -16,6 +16,10 @@
 
 <div style="margin-top: 22px;">
 <div style="margin-bottom: 12px;">
+    <form id="searchForm">
+        <input type="text" name="searchQuery" id="searchQuery" placeholder="Search message...">
+        <button type="submit" class="button-1">Search</button>
+    </form>
     <?php 
         echo $this->Form->create("Message", array(
             'url' => array(
@@ -91,7 +95,58 @@
                         alert('Failed to delete conversation. Please try again.');
                     }
                 });
-            }
+            }0
+        });
+    });
+
+    $(document).ready(function() {
+        $('#searchForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var keyword = $('#searchQuery').val(); // Get the search keyword
+
+            // Perform AJAX request to search for messages
+            $.ajax({
+                url: 'http://localhost/fdcmb/messages/search_message/<?php echo $senderId ?>/<?php echo $receiverId ?>/' + keyword,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Clear existing messages
+                    $('.conversation').empty();
+                    let noResults = '<h2>No Message Found</h2>';
+                    // Display matched messages
+                    if(data.length === 0) {
+                        $('.conversation').append(noResults)
+                    } else {
+                        $.each(data, function(index, message) {
+                        let senderName = message['Sender']['name'];
+                        let receiverName = message['Receiver']['name'];
+                        let senderPicture = message['Sender']['profile_picture'];
+                        let receiverPicture = message['Receiver']['profile_picture'];
+                        let sentAt = message['Message']['sent_at'];
+                        let messageContent = message['Message']['message'];
+
+                        let messageHTML = `
+                            <div style="display:flex;flex-direction: row;align-items: center;justify-content: flex-end;gap:10px;">
+                                <div>
+                                    <img src="/fdcmb/app/webroot/img/default_profile_pic.jpg"/>
+                                </div>
+                                <div>
+                                    <h3>${senderName} - ${receiverName}</h3>
+                                    <p>${messageContent}</p>
+                                    <p>${sentAt}</p>
+                                </div>
+                            </div>
+                        `;
+
+                        $('.conversation').append(messageHTML);
+                    });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(error); // Log any errors
+                }
+            });
         });
     });
 </script>

@@ -31,6 +31,7 @@
         echo $this->Form->input('message', array(
             'label' => 'Message', 
             'type' => 'textarea',
+            'required' => true,
         )); 
         echo $this->Form->button('Send Message', array('class'=> 'button-1'));
     ?>

@@ -15,30 +15,32 @@
 
 <div style="margin-top: 22px;">
     <h3>Messages</h3>
-    <?php 
-        // debug($contacts)
-    ?>
     <ul>
-        <?php foreach ($contacts as $contact): ?>
-            <li>
-                <?php if (isset($contact['Receiver']['name'])): ?>
-                    <?php 
-                        $senderId = $contact['Sender']['id'];
-                        $receiverId = $contact['Receiver']['id'];
-                        // $conversationId = $contact['Sender']['id'] . '_' $contact['Receiver']['id'];
-                    ?>
-                    <?php 
-                        echo $this->Html->link(
-                            'Conversation of ' . $contact['Sender']['name'] . ' and ' . $contact['Receiver']['name'], 
-                            array(
-                                'controller' => 'messages',
-                                'action' => 'conversation',
-                                $senderId,
-                                $receiverId
-                        )); 
-                    ?>
-                <?php endif; ?>
-            </li>
-        <?php endforeach; ?>
+        <?php 
+            if(count($contacts) > 0) {
+                foreach ($contacts as $contact): ?>
+                    <li>
+                        <?php if (isset($contact['Receiver']['name'])): ?>
+                            <?php 
+                                $senderId = $contact['Sender']['id'];
+                                $receiverId = $contact['Receiver']['id'];
+                                // $conversationId = $contact['Sender']['id'] . '_' $contact['Receiver']['id'];
+                            ?>
+                            <?php 
+                                echo $this->Html->link(
+                                    'Conversation of ' . $contact['Sender']['name'] . ' and ' . $contact['Receiver']['name'], 
+                                    array(
+                                        'controller' => 'messages',
+                                        'action' => 'conversation',
+                                        $senderId,
+                                        $receiverId
+                                )); 
+                            ?>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; 
+            } else {
+                echo '<p>No available contacts.</p>';
+            } ?>
     </ul>
 </div>

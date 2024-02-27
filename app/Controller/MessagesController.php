@@ -215,4 +215,38 @@ class MessagesController extends AppController {
             }
         }
     }
+
+    public function search_message($senderId, $receiverId, $keyword) {
+        $this->autoRender = false; // Disable rendering of view
+    
+        // Check if the request is AJAX
+        if ($this->request->is('ajax')) {
+            // Fetch all messages within the conversation with associated sender and receiver data
+            $messages = $this->Message->find('all', array(
+                'conditions' => array(
+                    'OR' => array(
+                        array(
+                            'sender_id' => $senderId,
+                            'receiver_id' => $receiverId
+                        ),
+                        array(
+                            'sender_id' => $receiverId,
+                            'receiver_id' => $senderId
+                        )
+                    ),
+                    // Add condition to search keyword in message content
+                    'Message.message LIKE' => "%$keyword%"
+                ),
+                'contain' => array(
+                    'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
+                    'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
+                )
+            ));
+    
+            // Respond with matched messages in JSON format
+            $this->response->type('json');
+            echo json_encode($messages);
+            return;
+        }
+    }
 }
