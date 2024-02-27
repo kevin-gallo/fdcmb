@@ -42,22 +42,34 @@
 </div>
     <div class="conversation">
         <?php foreach ($conversation as $msg): ?>
-            <div style="margin-bottom: 20px;display:flex;flex-direction: row;align-items: center;justify-content: flex-end;">
-                <div>
-                    <h3><?php echo $msg['Sender']['name']; ?></h3>
-                    <p><?php echo $msg['Message']['message']; ?></p>
-                    <p><?php echo $msg['Message']['sent_at']; ?></p>
-                </div>
-                <div style="float: left; margin-right: 10px;">
-                    <?php 
-                        $picture = $msg['Sender']['profile_picture'];
-                        if(isset($picture)) {
-                            echo $this->Html->image($picture);
-                        } else {
-                            echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
-                        }
-                    ?>
-                </div>
+            <div style="margin-bottom: 20px;" class="message-wrapper">
+                <h3><?php echo $msg['Sender']['name']; ?></h3>
+                    <?php if(strlen($msg['Message']['message']) > 10) : ?>
+                    <div class="short-message">
+                        <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
+                        <a href="#" class="show-more">Show More</a>
+                    </div>
+
+                    <div class="full-message" style="display: none;">
+                        <?php echo $msg['Message']['message']; ?>
+                        <a href="#" class="show-less">Show Less</a>
+                    </div>
+                    <?php else: ?>
+                        <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
+                    <?php endif; ?>
+                        <div>
+                            <p><?php echo $msg['Message']['sent_at']; ?></p>
+                        </div>
+                    <div style="float: left; margin-right: 10px;">
+                        <?php 
+                            $picture = $msg['Sender']['profile_picture'];
+                            if(isset($picture)) {
+                                echo $this->Html->image($picture);
+                            } else {
+                                echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
+                            }
+                        ?>
+                    </div>
                 <div style="clear: both;"></div>
             </div>
         <?php endforeach; ?>
@@ -149,4 +161,16 @@
             });
         });
     });
+
+    $(document).ready(function() {
+        $('.show-more').click(function () {  
+            $(this).closest('.message-wrapper').find('.short-message').hide();
+            $(this).closest('.message-wrapper').find('.full-message').show();
+        })
+
+        $('.show-less').click(function () {  
+            $(this).closest('.message-wrapper').find('.full-message').hide();
+            $(this).closest('.message-wrapper').find('.short-message').show();
+        })
+    })
 </script>
