@@ -88,9 +88,8 @@ class MessagesController extends AppController {
   
        // Get the current user's ID
        $userId = $this->Auth->user('id');
+       $this->set('user_id', $userId);
 
-
-  
        // Retrieve the messages exchanged between the current user and the selected receiver
        $this->paginate = array(
             'conditions' => array(

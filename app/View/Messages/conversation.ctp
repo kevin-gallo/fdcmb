@@ -17,7 +17,7 @@
 <div style="margin-top: 22px;">
 <div style="margin-bottom: 12px;">
     <form id="searchForm">
-        <input type="text" name="searchQuery" id="searchQuery" placeholder="Search message...">
+        <input type="text" name="searchQuery" id="searchQuery" placeholder="Search message..." required>
         <button type="submit" class="button-1">Search</button>
     </form>
     <?php 
@@ -28,8 +28,12 @@
                 $receiverId, // Receiver ID
                 $senderId // Sender ID
             )));
-        echo $this->Form->input('Message.message', array('label' => false,'placeholder' => 'Enter your message here...'));
-        echo $this->Form->button('New Message', array( 'class'=> 'button-1'));
+        echo $this->Form->input('Message.message', array(
+            'label' => false,
+            'placeholder' => 'Enter your message here...',
+            'required' => true,
+            ));
+        echo $this->Form->button('Reply', array( 'class'=> 'button-1'));
         echo $this->Form->end();
     ?>
 </div>
@@ -40,50 +44,92 @@
         <?php }
     ?>
 </div>
+
+<div>
     <div class="conversation">
         <?php foreach ($conversation as $msg): ?>
             <div style="margin-bottom: 20px;" class="message-wrapper">
-                <h3><?php echo $msg['Sender']['name']; ?></h3>
-                    <?php if(strlen($msg['Message']['message']) > 10) : ?>
-                    <div class="short-message">
-                        <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
-                        <a href="#" class="show-more">Show More</a>
-                    </div>
-
-                    <div class="full-message" style="display: none;">
-                        <?php echo $msg['Message']['message']; ?>
-                        <a href="#" class="show-less">Show Less</a>
-                    </div>
-                    <?php else: ?>
-                        <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
-                    <?php endif; ?>
-                        <div>
-                            <p><?php echo $msg['Message']['sent_at']; ?></p>
+                <?php if($user_id === $msg['Message']['sender_id']) { ?>
+                    <div style="text-align: right;">
+                        <h3 style="text-align: right;">
+                            <?php 
+                                echo $msg['Message']['sender_name'];
+                            ?>
+                        </h3>
+                        <?php if(strlen($msg['Message']['message']) > 10) { ?>
+                        <div class="short-message">
+                            <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
+                            <a href="#" class="show-more">Show More</a>
                         </div>
-                    <div style="float: left; margin-right: 10px;">
-                        <?php 
-                            $picture = $msg['Sender']['profile_picture'];
-                            if(isset($picture)) {
-                                echo $this->Html->image($picture);
-                            } else {
-                                echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
-                            }
-                        ?>
+
+                        <div class="full-message" style="display: none;">
+                            <?php echo $msg['Message']['message']; ?>
+                            <a href="#" class="show-less">Show Less</a>
+                        </div>
+                        <?php } else { ?>
+                            <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
+                        <?php } ?>
+                            <div>
+                                <p><?php echo $msg['Message']['sent_at']; ?></p>
+                            </div>
+                        <div style=" margin-right: 10px;">
+                            <?php 
+                                $picture = $msg['Sender']['profile_picture'];
+                                if(isset($picture)) {
+                                    echo $this->Html->image($picture);
+                                } else {
+                                    echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
+                                }
+                            ?>
+                        </div>
+                        <div style="clear: both;"></div>
                     </div>
-                <div style="clear: both;"></div>
+                  <?php  } else { ?>
+                        <div style="text-align: left;">
+                        <h3>
+                            <?php 
+                                echo $msg['Message']['sender_name'];
+                            ?>
+                        </h3>
+                        <?php if(strlen($msg['Message']['message']) > 10) { ?>
+                        <div class="short-message">
+                            <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
+                            <a href="#" class="show-more">Show More</a>
+                        </div>
+
+                        <div class="full-message" style="display: none;">
+                            <?php echo $msg['Message']['message']; ?>
+                            <a href="#" class="show-less">Show Less</a>
+                        </div>
+                        <?php } else { ?>
+                            <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
+                        <?php } ?>
+                            <div>
+                                <p><?php echo $msg['Message']['sent_at']; ?></p>
+                            </div>
+                        <div style=" margin-right: 10px;">
+                            <?php 
+                                $picture = $msg['Sender']['profile_picture'];
+                                if(isset($picture)) {
+                                    echo $this->Html->image($picture);
+                                } else {
+                                    echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
+                                }
+                            ?>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                 <?php }
+                ?>
             </div>
         <?php endforeach; ?>
+    </div>
+    <div style="text-align: center;">
         <?php 
-          if(count($conversation) > 10) { ?>
-            <div style="text-align: center;">
-                <!-- Pagination -->
-                <?php echo $this->Paginator->prev('Show Less'); ?>
-                <?php echo $this->Paginator->next('Show More'); ?>
-            </div>
-          <?php }
+            echo $this->Paginator->prev('Show Less') . ' ';
+            echo $this->Paginator->next('Show More'); 
         ?>
     </div>
-    
 </div>
 
 <script>
