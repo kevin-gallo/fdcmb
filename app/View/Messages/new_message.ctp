@@ -1,40 +1,43 @@
 <?php echo $this->Html->css('components/index') ?>
 <?php echo $this->Html->css('components/button') ?>
 
-<div class="header-1">
-    <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
-    <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> '')); ?></p>
-</div>
+<div class="container">
+    <div class="header-1 mt-5">
+        <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
+        <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> 'btn btn-danger')); ?></p>
+    </div>
 
-<h1 style="font-size: 50px;">New Message</h1>
+    <h1 class="mt-5">New Message</h1>
 
-<div>
-    <?php echo $this->Html->link('Home', array( 'controller'=> 'users','action'=> 'home')); ?>
-    <?php echo $this->Html->link('Message List', 'index') ?>
-</div>
+    <div class="mt-3">
+        <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home'), array('class'=> 'btn btn-primary')); ?>
+        <?php echo $this->Html->link('Message List', 'index', array('class'=> 'btn btn-primary')); ?>
+    </div>
 
-<div style="margin-top: 22px;">
-    <?php 
-    
-        echo $this->Form->create('Message');
-        echo $this->Form->input('receiver_id', array(
-            'type' => 'hidden', 
-            'id' => 'receiver-hidden',
-            'value' => ''
-        ));
-        echo $this->Form->input('receiver', array(
-            'id' => 'receiver-input',
-            'data-hidden-input' => 'receiver-hidden', // Link the select input to the hidden input
-            'placeholder' => 'Search for recipient...',
-            'class' => 'select2-input',
-        ));
-        echo $this->Form->input('message', array(
-            'label' => 'Message', 
-            'type' => 'textarea',
-            'required' => true,
-        )); 
-        echo $this->Form->button('Send Message', array('class'=> 'button-1'));
-    ?>
+    <div class="mt-4">
+        <?php 
+            echo $this->Form->create('Message', array('class' => 'mt-3'));
+            echo $this->Form->input('receiver_id', array(
+                'type' => 'hidden', 
+                'id' => 'receiver-hidden',
+                'value' => ''
+            ));
+            echo $this->Form->input('receiver', array(
+                'id' => 'receiver-input',
+                'data-hidden-input' => 'receiver-hidden', // Link the select input to the hidden input
+                'placeholder' => 'Search for recipient...',
+                'class' => 'form-control select2-input',
+            ));
+            echo $this->Form->input('message', array(
+                'label' => 'Message', 
+                'type' => 'textarea',
+                'required' => true,
+                'class' => 'form-control'
+            )); 
+            echo $this->Form->button('Send Message', array('class'=> 'btn btn-primary mt-3'));
+            echo $this->Form->end();
+        ?>
+    </div>
 </div>
 
 <script>
@@ -57,7 +60,7 @@
                     };
                 });
 
-                // // Initialize Select2 with preloaded data
+                // Initialize Select2 with preloaded data
                 $('#receiver-input').select2({
                     data: data,
                     templateResult: formatUser,
@@ -76,15 +79,15 @@
         });
 
         function formatUser(user) {
-        if (!user.id) {
-            return user.text;
-        }
+            if (!user.id) {
+                return user.text;
+            }
 
-        var $user = $(
-            '<span><img src="' + user.image + '" class="avatar" style="width:20px;height:20px;"/> ' + user.text + '</span>'
-        );
-        return $user;
-    }
+            var $user = $(
+                '<span><img src="' + user.image + '" class="avatar" style="width:20px;height:20px;"/> ' + user.text + '</span>'
+            );
+            return $user;
+        }
     });
 
 </script>

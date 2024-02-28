@@ -1,78 +1,78 @@
 <?php echo $this->Html->css('components/index') ?>
 <?php echo $this->Html->css('components/button') ?>
 
-<div class="header-1">
-    <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
-    <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> '')); ?></p>
-</div>
+<div class="container">
+    <div class="header-1 mt-5">
+        <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
+        <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> 'btn btn-danger')); ?></p>
+    </div>
 
-<h1 style="font-size: 50px;">Conversation</h1>
+    <h1 class="mt-5">Conversation</h1>
 
-<div>
-    <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home')); ?>
-    &nbsp;<?php echo $this->Html->link("Message List", "index") ?>
-    &nbsp;<?php echo $this->Html->link("New Message", "new_message") ?>
-</div>
+    <div class="mt-3">
+        <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home'), array('class'=> 'btn btn-primary')); ?>
+        <?php echo $this->Html->link("Message List", "index", array('class'=> 'btn btn-primary')); ?>
+        <?php echo $this->Html->link("New Message", "new_message", array('class'=> 'btn btn-primary')); ?>
+    </div>
 
-<div style="margin-top: 22px;">
-<div style="margin-bottom: 12px;">
-    <form id="searchForm">
-        <input type="text" name="searchQuery" id="searchQuery" placeholder="Search message..." required>
-        <button type="submit" class="button-1">Search</button>
-    </form>
-    <?php 
-        echo $this->Form->create("Message", array(
-            'url' => array(
-                'controller'=> 'messages',
-                'action'=> 'send_message', 
-                $receiverId, // Receiver ID
-                $senderId // Sender ID
-            )));
-        echo $this->Form->input('Message.message', array(
-            'label' => false,
-            'placeholder' => 'Enter your message here...',
-            'required' => true,
+    <div class="mt-4">
+        <form id="searchForm">
+            <div class="input-group">
+                <input type="text" class="form-control" name="searchQuery" id="searchQuery" placeholder="Search message..." required>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-4">
+        <?php 
+            echo $this->Form->create("Message", array(
+                'url' => array(
+                    'controller'=> 'messages',
+                    'action'=> 'send_message', 
+                    $receiverId, // Receiver ID
+                    $senderId // Sender ID
+                ),
+                'class' => 'mt-3'
             ));
-        echo $this->Form->button('Reply', array( 'class'=> 'button-1'));
-        echo $this->Form->end();
-    ?>
-</div>
-<div>
-    <?php 
-        if(count($conversation) > 0) { ?>
-            <button class="delete-conversation">Delete Conversation</button>
-        <?php }
-    ?>
-</div>
+            echo $this->Form->input('Message.message', array(
+                'label' => false,
+                'class' => 'form-control',
+                'placeholder' => 'Enter your message here...',
+                'required' => true,
+            ));
+            echo $this->Form->button('Reply', array( 'class'=> 'btn btn-primary mt-3'));
+            echo $this->Form->end();
+        ?>
+    </div>
 
-<div>
-    <div class="conversation">
+    <div class="mt-4">
+        <?php 
+            if(count($conversation) > 0) { ?>
+                <button class="delete-conversation">Delete Conversation</button>
+            <?php }
+        ?>
+    </div>
+
+    <div class="conversation mt-4">
         <?php foreach ($conversation as $msg): ?>
-            <div style="margin-bottom: 20px;" class="message-wrapper">
-                <?php if($user_id === $msg['Message']['sender_id']) { ?>
-                    <div style="text-align: right;">
-                        <h3 style="text-align: right;">
-                            <?php 
-                                echo $msg['Message']['sender_name'];
-                            ?>
-                        </h3>
+            <div class="message-wrapper mb-4">
+                <?php if($senderId === $msg['Message']['sender_id']) { ?>
+                    <div class="text-right">
+                        <h3 class="text-right"><?php echo $msg['Message']['sender_name']; ?></h3>
                         <?php if(strlen($msg['Message']['message']) > 10) { ?>
-                        <div class="short-message">
-                            <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
+                            <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
+                            <div class="full-message" style="display: none;"><?php echo $msg['Message']['message']; ?></div>
                             <a href="#" class="show-more">Show More</a>
-                        </div>
-
-                        <div class="full-message" style="display: none;">
-                            <?php echo $msg['Message']['message']; ?>
-                            <a href="#" class="show-less">Show Less</a>
-                        </div>
                         <?php } else { ?>
                             <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
                         <?php } ?>
-                            <div>
-                                <p><?php echo $msg['Message']['sent_at']; ?></p>
-                            </div>
-                        <div style=" margin-right: 10px;">
+                        <div class="message-info mt-2">
+                            <p><?php echo $msg['Message']['sent_at']; ?></p>
+                        </div>
+                        <div class="profile-picture">
                             <?php 
                                 $picture = $msg['Sender']['profile_picture'];
                                 if(isset($picture)) {
@@ -82,32 +82,21 @@
                                 }
                             ?>
                         </div>
-                        <div style="clear: both;"></div>
                     </div>
-                  <?php  } else { ?>
-                        <div style="text-align: left;">
-                        <h3>
-                            <?php 
-                                echo $msg['Message']['sender_name'];
-                            ?>
-                        </h3>
+                <?php } else { ?>
+                    <div class="text-left">
+                        <h3><?php echo $msg['Message']['sender_name']; ?></h3>
                         <?php if(strlen($msg['Message']['message']) > 10) { ?>
-                        <div class="short-message">
-                            <?php echo substr($msg['Message']['message'],0, 50) . '...'; ?>
+                            <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
+                            <div class="full-message" style="display: none;"><?php echo $msg['Message']['message']; ?></div>
                             <a href="#" class="show-more">Show More</a>
-                        </div>
-
-                        <div class="full-message" style="display: none;">
-                            <?php echo $msg['Message']['message']; ?>
-                            <a href="#" class="show-less">Show Less</a>
-                        </div>
                         <?php } else { ?>
                             <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
                         <?php } ?>
-                            <div>
-                                <p><?php echo $msg['Message']['sent_at']; ?></p>
-                            </div>
-                        <div style=" margin-right: 10px;">
+                        <div class="message-info mt-2">
+                            <p><?php echo $msg['Message']['sent_at']; ?></p>
+                        </div>
+                        <div class="profile-picture">
                             <?php 
                                 $picture = $msg['Sender']['profile_picture'];
                                 if(isset($picture)) {
@@ -117,20 +106,20 @@
                                 }
                             ?>
                         </div>
-                        <div style="clear: both;"></div>
                     </div>
-                 <?php }
-                ?>
+                <?php } ?>
             </div>
         <?php endforeach; ?>
     </div>
-    <div style="text-align: center;">
+
+    <div class="text-center mt-4">
         <?php 
-            echo $this->Paginator->prev('Show Less') . ' ';
-            echo $this->Paginator->next('Show More'); 
+            echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary')) . ' ';
+            echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary')); 
         ?>
     </div>
 </div>
+
 
 <script>
     $(document).ready(function() {

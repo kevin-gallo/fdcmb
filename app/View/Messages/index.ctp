@@ -1,30 +1,30 @@
 <?php echo $this->Html->css('components/index') ?>
 <?php echo $this->Html->css('components/button') ?>
 
-<div class="header-1">
-    <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
-    <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> '')); ?></p>
-</div>
+<div class="container mt-5">
+    <div class="header-1">
+        <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
+        <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> '')); ?></p>
+    </div>
 
-<h1 style="font-size: 50px;">Message List</h1>
+    <h1 class="mt-4" style="font-size: 50px;">Message List</h1>
 
-<div>
-    <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home')); ?>
-&nbsp;<?php echo $this->Html->link("New Message", "new_message") ?>
-</div>
+    <div class="mb-3">
+        <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home'), array('class' => 'btn btn-primary mr-2')); ?>
+        <?php echo $this->Html->link('New Message', 'new_message', array('class' => 'btn btn-primary')); ?>
+    </div>
 
-<div style="margin-top: 22px;">
-    <h3>Messages</h3>
-    <ul>
-        <?php 
+    <div>
+        <h3>Inbox</h3>
+        <ul class="list-group">
+            <?php 
             if(count($contacts) > 0) {
                 foreach ($contacts as $contact): ?>
-                    <li>
+                    <li class="list-group-item">
                         <?php if (isset($contact['Receiver']['name'])): ?>
                             <?php 
                                 $senderId = $contact['Sender']['id'];
                                 $receiverId = $contact['Receiver']['id'];
-                                // $conversationId = $contact['Sender']['id'] . '_' $contact['Receiver']['id'];
                             ?>
                             <?php 
                                 echo $this->Html->link(
@@ -34,7 +34,9 @@
                                         'action' => 'conversation',
                                         $senderId,
                                         $receiverId
-                                )); 
+                                    ),
+                                    array('class' => 'btn btn-primary')
+                                ); 
                             ?>
                         <?php endif; ?>
                     </li>
@@ -42,5 +44,6 @@
             } else {
                 echo '<p>No available contacts.</p>';
             } ?>
-    </ul>
+        </ul>
+    </div>
 </div>
