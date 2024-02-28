@@ -5,7 +5,10 @@
     <p style="text-transform:capitalize;">Welcome, <?php echo h($name) ?> </p>
     <p><?php echo $this->Html->link('Logout', array('controller' =>'users','action'=> 'logout'), array('class'=> '')); ?></p>
 </div>
-
+<div class="mb-3">
+    <a href="<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'home')) ?>" class="btn btn-primary">Home</a>
+    <a href="<?php echo $this->Html->url(array('controller' => 'users', 'action' => 'profile')) ?>" class="btn btn-info">Profile</a>
+</div>
 <h1 style="font-size: 50px;">User Profile</h1>
 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Hic autem repellat velit distinctio delectus quisquam voluptas repudiandae eveniet, in ullam consequuntur vero, veritatis ducimus sequi dolore molestiae aut, assumenda harum.</p>
 
