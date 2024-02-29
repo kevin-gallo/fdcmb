@@ -134,7 +134,7 @@
             if (confirmed) {
                 // Send AJAX request to delete conversation
                 $.ajax({
-                    url: 'http://localhost/fdcmb/messages/deleteConversation/<?php echo $senderId; ?>/<?php echo $receiverId; ?>',
+                    url: 'http://localhost/fdcmb/messages/deleteConversation/<?php echo $receiverId; ?>',
                     type: 'POST',
                     success: function(response) {
                         // Fade out the conversation container

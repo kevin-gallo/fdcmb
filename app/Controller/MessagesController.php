@@ -216,7 +216,7 @@ class MessagesController extends AppController {
        }
    }
 
-    public function deleteConversation($senderId, $receiverId) {
+    public function deleteConversation( $receiverId) {
         $this->autoRender = false; // Disable rendering of view
 
         // Check if the request is AJAX
@@ -225,12 +225,12 @@ class MessagesController extends AppController {
             if ($this->Message->deleteAll(array(
                 'OR' => array(
                     array(
-                        'sender_id' => $senderId,
+                        // 'sender_id' => $senderId,
                         'receiver_id' => $receiverId
                     ),
                     array(
                         'sender_id' => $receiverId,
-                        'receiver_id' => $senderId
+                        // 'receiver_id' => $senderId
                     )
                 )
             ))) {
