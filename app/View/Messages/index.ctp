@@ -17,28 +17,33 @@
     <div>
         <h3>Inbox</h3>
         <ul class="list-group">
-            <?php 
+            <?php
             if(count($contacts) > 0) {
-                foreach ($contacts as $contact): ?>
+                foreach ($contacts as $contact): 
+                    $receiver = "";
+                    $sender = "";
+                    foreach($users as $user){
+                        if($contact['messages']['receiver_id'] === $user['User']['id']) {
+                            $receiver = $user['User']['name'];
+                        }
+
+                        if($contact['messages']['sender_id'] === $user['User']['id']) {
+                            $sender = $user['User']['name'];
+                        }
+                    }
+                ?>
                     <li class="list-group-item">
-                        <?php if (isset($contact['Receiver']['name'])): ?>
-                            <?php 
-                                $senderId = $contact['Sender']['id'];
-                                $receiverId = $contact['Receiver']['id'];
-                            ?>
                             <?php 
                                 echo $this->Html->link(
-                                    'Conversation of ' . $contact['Sender']['name'] . ' and ' . $contact['Receiver']['name'], 
+                                    'Conversation of ' . $sender . ' and ' . $receiver, 
                                     array(
                                         'controller' => 'messages',
                                         'action' => 'conversation',
-                                        $senderId,
-                                        $receiverId
+                                        $contact['messages']['receiver_id']
                                     ),
-                                    array('class' => 'btn btn-primary')
+                                    array('class' => 'btn btn-primary'),
                                 ); 
                             ?>
-                        <?php endif; ?>
                     </li>
                 <?php endforeach; 
             } else {

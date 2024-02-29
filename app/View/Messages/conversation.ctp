@@ -13,6 +13,11 @@
         <?php echo $this->Html->link('Home', array('controller'=> 'users','action'=> 'home'), array('class'=> 'btn btn-primary')); ?>
         <?php echo $this->Html->link("Message List", "index", array('class'=> 'btn btn-primary')); ?>
         <?php echo $this->Html->link("New Message", "new_message", array('class'=> 'btn btn-primary')); ?>
+        <?php 
+            if(count($conversation) > 0) { ?>
+                <button class="btn btn-danger" id="delete-conversation">Delete Conversation</button>
+            <?php }
+        ?>
     </div>
 
     <div class="mt-4">
@@ -26,41 +31,12 @@
         </form>
     </div>
 
-    <div class="mt-4">
-        <?php 
-            echo $this->Form->create("Message", array(
-                'url' => array(
-                    'controller'=> 'messages',
-                    'action'=> 'send_message', 
-                    $receiverId, // Receiver ID
-                    $senderId // Sender ID
-                ),
-                'class' => 'mt-3'
-            ));
-            echo $this->Form->input('Message.message', array(
-                'label' => false,
-                'class' => 'form-control',
-                'placeholder' => 'Enter your message here...',
-                'required' => true,
-            ));
-            echo $this->Form->button('Reply', array( 'class'=> 'btn btn-primary mt-3'));
-            echo $this->Form->end();
-        ?>
-    </div>
-
-    <div class="mt-4">
-        <?php 
-            if(count($conversation) > 0) { ?>
-                <button class="delete-conversation">Delete Conversation</button>
-            <?php }
-        ?>
-    </div>
-
     <div class="conversation mt-4">
-        <?php foreach ($conversation as $msg): ?>
+    <?php foreach ($conversation as $msg): ?>
             <div class="message-wrapper mb-4">
                 <?php if($senderId === $msg['Message']['sender_id']) { ?>
-                    <div class="text-right">
+                    <div class="text-right  message-sender">
+                        <div>
                         <h3 class="text-right"><?php echo $msg['Message']['sender_name']; ?></h3>
                         <?php if(strlen($msg['Message']['message']) > 10) { ?>
                             <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
@@ -72,39 +48,45 @@
                         <div class="message-info mt-2">
                             <p><?php echo $msg['Message']['sent_at']; ?></p>
                         </div>
+                        </div>
                         <div class="profile-picture">
                             <?php 
                                 $picture = $msg['Sender']['profile_picture'];
                                 if(isset($picture)) {
-                                    echo $this->Html->image($picture);
+                                    echo $this->Html->image($picture, array('class'=> 'user-image'));
                                 } else {
-                                    echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
+                                    echo $this->Html->image('/img/default_profile_pic.jpg', array(
+                                        'alt'=> 'Default Image ',
+                                        'class' => 'user-image'
+                                    ));
                                 }
                             ?>
                         </div>
                     </div>
                 <?php } else { ?>
-                    <div class="text-left">
-                        <h3><?php echo $msg['Message']['sender_name']; ?></h3>
-                        <?php if(strlen($msg['Message']['message']) > 10) { ?>
-                            <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
-                            <div class="full-message" style="display: none;"><?php echo $msg['Message']['message']; ?></div>
-                            <a href="#" class="show-more">Show More</a>
-                        <?php } else { ?>
-                            <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
-                        <?php } ?>
-                        <div class="message-info mt-2">
-                            <p><?php echo $msg['Message']['sent_at']; ?></p>
-                        </div>
+                    <div class="text-left message-receiver">
                         <div class="profile-picture">
                             <?php 
                                 $picture = $msg['Sender']['profile_picture'];
                                 if(isset($picture)) {
-                                    echo $this->Html->image($picture);
+                                    echo $this->Html->image($picture, array('class'=> 'user-image'));
                                 } else {
                                     echo $this->Html->image('/img/default_profile_pic.jpg', array('alt'=> 'Default Image '));
                                 }
                             ?>
+                        </div>
+                        <div>
+                            <h3><?php echo $msg['Message']['sender_name']; ?></h3>
+                            <?php if(strlen($msg['Message']['message']) > 10) { ?>
+                                <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
+                                <div class="full-message" style="display: none;"><?php echo $msg['Message']['message']; ?></div>
+                                <a href="#" class="show-more">Show More</a>
+                            <?php } else { ?>
+                                <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
+                            <?php } ?>
+                            <div class="message-info mt-2">
+                                <p><?php echo $msg['Message']['sent_at']; ?></p>
+                            </div>
                         </div>
                     </div>
                 <?php } ?>
@@ -112,11 +94,34 @@
         <?php endforeach; ?>
     </div>
 
-    <div class="text-center mt-4">
-        <?php 
-            echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary')) . ' ';
-            echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary')); 
-        ?>
+    <div class="send-message-wrapper">
+        <div class="mt-4">
+            <?php 
+                echo $this->Form->create("Message", array(
+                    'url' => array(
+                        'controller'=> 'messages',
+                        'action'=> 'send_message', 
+                        $receiverId, // Receiver ID
+                    ),
+                    'class' => 'mt-3'
+                ));
+                echo $this->Form->input('Message.message', array(
+                    'label' => false,
+                    'class' => 'form-control',
+                    'placeholder' => 'Enter your message here...',
+                    'required' => true,
+                ));
+                echo $this->Form->button('Reply', array( 'class'=> 'btn btn-primary'));
+                echo $this->Form->end();
+            ?>
+        </div>
+
+        <div class="text-center mt-4">
+            <?php 
+                echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary')) . ' ';
+                echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary')); 
+            ?>
+        </div>
     </div>
 </div>
 
@@ -124,7 +129,7 @@
 <script>
     $(document).ready(function() {
         // Handle delete conversation button click
-        $('.delete-conversation').click(function() {
+        $('#delete-conversation').click(function() {
             var confirmed = confirm('Are you sure you want to delete this conversation?');
             if (confirmed) {
                 // Send AJAX request to delete conversation
