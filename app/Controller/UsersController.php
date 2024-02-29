@@ -142,41 +142,43 @@ class UsersController extends AppController {
         $this->set('name', $name);
     
         if ($this->request->is('post')) {
-            // Load the User model
-            $this->loadModel('User');
-            
-            // Get the user ID from the session
+            $this->User->id = $this->Auth->user('id');
             $userId = $this->Auth->user('id');
+            $user = $this->User->findById($userId);
             
             // Get the current password, new password, and confirm password from the form data
             $currentPassword = $this->request->data['User']['current_password'];
             $newPassword = $this->request->data['User']['new_password'];
             $confirmPassword = $this->request->data['User']['confirm_password'];
+
+            $hashedCurrentPassword = Security::hash($currentPassword, 'sha1', true);
     
-            // Retrieve the user's record from the database
-            $user = $this->User->findById($userId);
-            
             // Check if the current password matches the password in the database
-            if (Security::hash($currentPassword, 'sha1', true) === $user['User']['password']) {
+            if ($hashedCurrentPassword === $user['User']['password']) {
                 // Check if the new password and confirm password match
-                if ($newPassword === $confirmPassword) {
-                    // Set the new password
-                    $user['User']['password'] = Security::hash($newPassword, 'sha1', true);
-                    
-                    // Save the updated user data
-                    if ($this->User->save($user, false)) { // Set validate to false to bypass validation
-                        $this->Flash->success('Password changed successfully.');
-                        return $this->redirect("profile");
-                    } else {
-                        $this->Flash->error('Failed to update password.');
-                    }
+
+                if ($currentPassword === $newPassword || $currentPassword === $confirmPassword) {
+                    $this->Flash->error(__('New password should not match with the current password!'));
                 } else {
-                    $this->Flash->error('New password and confirm password do not match.');
+                    if ($newPassword === $confirmPassword) {
+                        // Set the new password
+                        
+                        // $hashedCurrentPassword = Security::hash($newPassword, 'sha1', true);
+                        
+                        // Save the updated user data
+                        if ($this->User->saveField('password', $newPassword)) { 
+                            $this->Flash->success('Password changed successfully.');
+                            return $this->redirect("profile");
+                        } else {
+                            $this->Flash->error('Failed to update password.');
+                        }
+                    } else {
+                        $this->Flash->error('New password and Confirm password do not match.');
+                    }
                 }
             } else {
                 $this->Flash->error('Current password is incorrect.');
             }
         }
     }
-    
 }    
