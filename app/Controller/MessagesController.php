@@ -64,16 +64,11 @@ class MessagesController extends AppController {
            $this->set('receiverId', $receiverId);
 
            if (empty($receiverId)) {
-               $this->Flash->error(__('Receiver ID is required.'));
-               return $this->redirect(array('action' => 'index'));
+               $this->Flash->error(__('Receipient is required.'));
+               return $this->redirect(array('action' => 'new_message'));
            }
            // Populate sender_id, receiver_id, sender_name, receiver_name, sender_picture, receiver_picture, and sent_at
            $receiver = $this->User->findById($receiverId);
-
-           if (!$receiver) {
-               $this->Flash->error(__('Receiver not found.'));
-               return $this->redirect(array('action' => 'index'));
-           }
 
            // Populate sender_id, receiver_id, sender_name, receiver_name, sender_picture, receiver_picture, and sent_at
            $this->request->data['Message']['sender_id'] = $senderId;
