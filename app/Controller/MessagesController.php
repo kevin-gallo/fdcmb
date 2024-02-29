@@ -154,11 +154,17 @@ class MessagesController extends AppController {
    public function get_users() {
        $this->autoRender = false;
        $this->loadModel('User');
-  
+
        if ($this->request->is('get')) {
            $conditions = array();
            $keyword = $this->request->query('q');
            $conditions['User.name LIKE'] = '%' . $keyword . '%';
+
+           // Get the ID of the current logged-in user
+            $currentUserId = $this->Auth->user('id');
+
+            // Exclude the current user from the query
+            $conditions['NOT'] = array('User.id' => $currentUserId);
   
            // Retrieve list of users with id and name
            $users = $this->User->find('list', array(
