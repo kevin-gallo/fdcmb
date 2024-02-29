@@ -210,7 +210,8 @@ class MessagesController extends AppController {
                 )
             ))) {
                 $this->Flash->success('Conversation deleted successfully.');
-                $this->redirect(array('action'=> 'index'));
+                // $this->redirect(array('action'=> 'conversation'));
+                return json_encode(array('success' => true));
             } else {
                 // Respond with error message
                 return json_encode(array('success' => false, 'message' => 'Failed to delete conversation.'));

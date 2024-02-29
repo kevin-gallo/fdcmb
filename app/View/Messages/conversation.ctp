@@ -20,7 +20,8 @@
         ?>
     </div>
 
-    <div class="mt-4">
+    <?php if(count($conversation) > 0) : ?>
+        <div class="mt-4">
         <form id="searchForm">
             <div class="input-group">
                 <input type="text" class="form-control" name="searchQuery" id="searchQuery" placeholder="Search message..." required>
@@ -117,14 +118,20 @@
                 echo $this->Form->end();
             ?>
         </div>
-
         <div class="text-center mt-4">
-            <?php 
-                echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary paginate-prev')) . ' ';
-                echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary paginate-next')); 
-            ?>
+            <?php if(count($conversation) > 0) : ?>
+                <?php
+                    echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary paginate-prev')) . ' ';
+                    echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary paginate-next')); 
+                ?>
+            <?php else : ?>
+            <?php echo '<div>No conversation</div>'; ?>
+            <?php endif; ?>
         </div>
     </div>
+    <?php else: ?>
+        <?php echo '<h2>No messages available.</h2>' ?>
+    <?php endif; ?>
 </div>
 
 
@@ -143,8 +150,10 @@
                         $('.conversation').fadeOut('slow', function() {
                             $(this).remove();
                         });
-
-                        window.location.href = 'http://localhost/fdcmb/messages/index';
+                        setInterval(() => {
+                            location.reload()    
+                        }, 2000)
+                        // window.location.href = 'http://localhost/fdcmb/messages/index';
                     },
                     error: function() {
                         alert('Failed to delete conversation. Please try again.');
