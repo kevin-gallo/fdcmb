@@ -102,46 +102,20 @@ class MessagesController extends AppController {
        $this->set('name', $user);
     
        $senderId = $this->Auth->user('id');
-  
-       // Get the current user's ID
-    //    $userId = $this->Auth->user('id');
-    //    $this->set('user_id', $userId);
-
-       // Retrieve the messages exchanged between the current user and the selected receiver
-    //    $this->paginate = array(
-    //         'conditions' => array(
-    //             'OR' => array(
-    //                 array(
-    //                     'AND' => array(
-    //                         'sender_id' => $senderId,
-    //                         'receiver_id' => $receiverId
-    //                     )
-    //                 ),
-    //                 array(
-    //                     'AND' => array(
-    //                         'sender_id' => $receiverId,
-    //                         'receiver_id' => $senderId
-    //                     )
-    //                 )
-    //             ) 
-    //         ),
-    //         'order' => 'Message.sent_at DESC',
-    //         'contain' => array(
-    //             'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
-    //             'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
-    //         ),
-    //         'limit' => 10 // Number of messages per page
-    //     );
 
         $conversation = $this->Message->query("SELECT * FROM messages WHERE (sender_id = '$senderId' 
                                             AND receiver_id = '$receiverId') 
                                             OR (sender_id = '$receiverId' 
                                             AND receiver_id = '$senderId') 
-                                            ORDER BY sent_at DESC"); 
+                                            ORDER BY sent_at ASC"); 
+
+        $this->paginate = array(
+            'order' => 'sent_at ASC',
+            'limit' => 10
+        );
 
         $conversation = $this->paginate('Message');
 
-    //    debug($conversation);
        $this->set('conversation', $conversation);
        $this->set('senderId', $senderId);
        $this->set('receiverId', $receiverId);
@@ -235,8 +209,7 @@ class MessagesController extends AppController {
                 )
             ))) {
                 $this->Flash->success('Conversation deleted successfully.');
-                // Respond with success message
-                return json_encode(array('success' => true));
+                $this->redirect(array('action'=> 'index'));
             } else {
                 // Respond with error message
                 return json_encode(array('success' => false, 'message' => 'Failed to delete conversation.'));

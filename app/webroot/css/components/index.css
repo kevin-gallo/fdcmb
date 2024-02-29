@@ -59,3 +59,11 @@
 .message-sender .text-right {
     color: #fff;
 }
+
+.paginate-prev a{
+    color: #fff !important;
+}
+
+.paginate-next a{
+    color: #fff !important;
+}

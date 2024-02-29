@@ -118,8 +118,8 @@
 
         <div class="text-center mt-4">
             <?php 
-                echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary')) . ' ';
-                echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary')); 
+                echo $this->Paginator->prev('Show Less', array('class' => 'btn btn-primary paginate-prev')) . ' ';
+                echo $this->Paginator->next('Show More', array('class' => 'btn btn-primary paginate-next')); 
             ?>
         </div>
     </div>
@@ -141,7 +141,8 @@
                         $('.conversation').fadeOut('slow', function() {
                             $(this).remove();
                         });
-                        location.reload()
+
+                        window.location.href = 'http://localhost/fdcmb/messages/index';
                     },
                     error: function() {
                         alert('Failed to delete conversation. Please try again.');
