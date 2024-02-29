@@ -29,7 +29,7 @@
                 'name' => 'data[User][profile_picture]',
                 'class' => 'form-control-file mb-3',
                 'accept' => '.jpg,.jpeg,.gif,.png',
-                'label' => 'Profile Picture',
+                'label' => 'Upload Picture',
                 'id' => 'profile-picture'
             ));
 

@@ -72,3 +72,14 @@
     color: #fff;
     text-decoration: underline;
 }
+
+.search-results-wrapper {
+    background-color: #feacc6;
+    padding: 10px;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.search-results-wrapper h3 {
+    color: #fff;
+}
