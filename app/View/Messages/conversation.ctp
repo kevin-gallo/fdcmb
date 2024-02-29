@@ -159,10 +159,11 @@
 
             // Perform AJAX request to search for messages
             $.ajax({
-                url: 'http://localhost/fdcmb/messages/search_message/<?php echo $senderId ?>/<?php echo $receiverId ?>/' + keyword,
+                url: 'http://localhost/fdcmb/messages/search_message/<?php echo $receiverId ?>/' + keyword,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
+                console.log(data);
                     // Clear existing messages
                     $('.conversation').empty();
                     let noResults = '<h2>No Message Found</h2>';
@@ -172,7 +173,7 @@
                     } else {
                         $.each(data, function(index, message) {
                         let senderName = message['Sender']['name'];
-                        let receiverName = message['Receiver']['name'];
+                        let receiverName = message['Message']['receiver_name'];
                         let senderPicture = message['Sender']['profile_picture'];
                         let receiverPicture = message['Receiver']['profile_picture'];
                         let sentAt = message['Message']['sent_at'];
@@ -184,7 +185,7 @@
                                     <img src="/fdcmb/app/webroot/img/default_profile_pic.jpg"/>
                                 </div>
                                 <div>
-                                    <h3>${senderName} - ${receiverName}</h3>
+                                    <h3>${senderName}</h3>
                                     <p>${messageContent}</p>
                                     <p>${sentAt}</p>
                                 </div>

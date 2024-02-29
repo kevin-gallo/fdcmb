@@ -244,7 +244,7 @@ class MessagesController extends AppController {
         }
     }
 
-    public function search_message($senderId, $receiverId, $keyword) {
+    public function search_message($senderId, $keyword) {
         $this->autoRender = false; // Disable rendering of view
     
         // Check if the request is AJAX
@@ -255,10 +255,10 @@ class MessagesController extends AppController {
                     'OR' => array(
                         array(
                             'sender_id' => $senderId,
-                            'receiver_id' => $receiverId
+                            // 'receiver_id' => $receiverId
                         ),
                         array(
-                            'sender_id' => $receiverId,
+                            // 'sender_id' => $receiverId,
                             'receiver_id' => $senderId
                         )
                     ),
@@ -270,7 +270,7 @@ class MessagesController extends AppController {
                     'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
                 )
             ));
-    
+
             // Respond with matched messages in JSON format
             $this->response->type('json');
             echo json_encode($messages);
