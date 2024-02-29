@@ -67,3 +67,8 @@
 .paginate-next a{
     color: #fff !important;
 }
+
+.show-more,.show-less {
+    color: #fff;
+    text-decoration: underline;
+}

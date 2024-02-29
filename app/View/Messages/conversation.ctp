@@ -38,13 +38,15 @@
                     <div class="text-right  message-sender">
                         <div>
                         <h3 class="text-right"><?php echo $msg['Message']['sender_name']; ?></h3>
-                        <?php if(strlen($msg['Message']['message']) > 10) { ?>
+                        <?php if(strlen($msg['Message']['message']) > 10) : ?>
                             <div class="short-message"><?php echo substr($msg['Message']['message'],0, 50) . '...'; ?></div>
                             <div class="full-message" style="display: none;"><?php echo $msg['Message']['message']; ?></div>
                             <a href="#" class="show-more">Show More</a>
-                        <?php } else { ?>
+                            <a href="#" class="show-less" style="display: none;">Show Less</a>
+                            
+                        <?php  else : ?>
                             <div class="short-message"><?php echo $msg['Message']['message']; ?></div>
-                        <?php } ?>
+                        <?php endif; ?>
                         <div class="message-info mt-2">
                             <p><?php echo $msg['Message']['sent_at']; ?></p>
                         </div>
@@ -208,11 +210,15 @@
         $('.show-more').click(function () {  
             $(this).closest('.message-wrapper').find('.short-message').hide();
             $(this).closest('.message-wrapper').find('.full-message').show();
+            $('.show-less').show();
+            $('.show-more').hide();
         })
 
         $('.show-less').click(function () {  
             $(this).closest('.message-wrapper').find('.full-message').hide();
             $(this).closest('.message-wrapper').find('.short-message').show();
+            $('.show-less').hide();
+            $('.show-more').show();
         })
     })
 </script>

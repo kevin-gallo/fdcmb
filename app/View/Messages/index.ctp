@@ -18,11 +18,11 @@
         <h3>Inbox</h3>
         <ul class="list-group">
             <?php
-            if(count($contacts) > 0) {
+            if(count($contacts) > 0) :
                 foreach ($contacts as $contact): 
                     $receiver = "";
                     $sender = "";
-                    foreach($users as $user){
+                    foreach($users as $user) :
                         if($contact['messages']['receiver_id'] === $user['User']['id']) {
                             $receiver = $user['User']['name'];
                         }
@@ -30,7 +30,7 @@
                         if($contact['messages']['sender_id'] === $user['User']['id']) {
                             $sender = $user['User']['name'];
                         }
-                    }
+                    endforeach;
                 ?>
                     <li class="list-group-item">
                             <?php 
@@ -45,10 +45,10 @@
                                 ); 
                             ?>
                     </li>
-                <?php endforeach; 
-            } else {
-                echo '<p>No available contacts.</p>';
-            } ?>
+                <?php endforeach; ?>
+            <?php else : ?>
+               <?php echo '<p>No available contacts.</p>'; ?>
+            <?php endif; ?>
         </ul>
     </div>
 </div>
