@@ -41,6 +41,8 @@
                             
                                 $senderId = $contact['Sender']['id'];
                                 $receiverId = $contact['Receiver']['id'];
+
+                                $isUser = $receiverId === $userId ? $senderId : $receiverId;
                             ?>
                             <?php 
                                 echo $this->Html->link(
@@ -49,7 +51,7 @@
                                         'controller' => 'messages',
                                         'action' => 'conversation',
                                         // $senderId,
-                                        $receiverId,
+                                        $isUser,
                                     ),
                                     array('class' => 'btn btn-primary'),
                                 ); 

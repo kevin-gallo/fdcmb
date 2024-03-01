@@ -33,7 +33,9 @@
     </div>
 
     <div class="conversation mt-4">
-    <?php foreach ($conversation as $msg): ?>
+    <?php
+    // debug($conversation);
+    foreach ($conversation as $msg): ?>
             <div class="message-wrapper mb-4">
                 <?php if($senderId === $msg['Message']['sender_id']) { ?>
                     <div class="text-right  message-sender">

@@ -11,6 +11,8 @@ class MessagesController extends AppController {
 
        // Get the current user's ID
        $userId = $this->Auth->user('id');
+
+       debug($userId);
   
        // Retrieve the list of contacts (users with whom the current user has conversations)
        $contacts = $this->Message->find('all', array(
@@ -44,6 +46,7 @@ class MessagesController extends AppController {
 
         // $this->set('users', $users);
         $this->set('userId', $userId); // Pass the userId to the view
+        // $this->set('senderId', $userId); // Pass the userId to the view
         $this->set('contacts', $contacts);
    }
 
@@ -96,6 +99,8 @@ class MessagesController extends AppController {
     
        $senderId = $this->Auth->user('id');
 
+    //    debug($senderId);
+
         // $conversation = $this->Message->query("SELECT * FROM messages WHERE (sender_id = '$senderId' 
         //                                     AND receiver_id = '$receiverId') 
         //                                     OR (sender_id = '$receiverId' 
@@ -107,32 +112,52 @@ class MessagesController extends AppController {
         //     'limit' => 10
         // );
 
-        $this->paginate = array(
-            'conditions' => array(
-                'OR' => array(
-                    array(
-                        'AND' => array(
-                            'sender_id' => $senderId,
-                            'receiver_id' => $receiverId
-                        )
-                    ),
-                    array(
-                        'AND' => array(
-                            'sender_id' => $receiverId,
-                            'receiver_id' => $senderId
-                        )
-                    )
+        // $this->paginate = array(
+        //     'conditions' => array(
+        //         'OR' => array(
+        //             array(
+        //                 'AND' => array(
+        //                     'sender_id' => $senderId,
+        //                     'receiver_id' => $receiverId
+        //                 )
+        //             ),
+        //             array(
+        //                 'AND' => array(
+        //                     'sender_id' => $receiverId,
+        //                     'receiver_id' => $senderId
+        //                 )
+        //             )
+        //         )
+        //     ),
+        //     'order' => 'Message.sent_at ASC',
+        //     // 'contain' => array(
+        //     //     'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
+        //     //     'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
+        //     // ),
+        //     'limit' => 10 // Number of messages per page
+        // );
+
+        $conditions = array(
+            'OR' => array(
+                array(
+                    'Message.sender_id' => $senderId,
+                    'Message.receiver_id' => $receiverId,
+                ),
+                array(
+                    'Message.sender_id' => $receiverId,
+                    'Message.receiver_id' => $senderId,
                 )
             ),
-            'order' => 'Message.sent_at ASC',
-            // 'contain' => array(
-            //     'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
-            //     'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
-            // ),
-            'limit' => 10 // Number of messages per page
         );
 
-        $conversation = $this->paginate('Message');
+        $conversation = $this->Message->find('all', array(
+            'conditions' => $conditions,
+            'order' => array('Message.sent_at DESC'),
+        ));
+
+        // debug($conversation );
+
+        // $messages = $this->paginate('Message');
 
        $this->set('conversation', $conversation);
        $this->set('senderId', $senderId);
@@ -141,7 +166,7 @@ class MessagesController extends AppController {
 
        if ($this->request->is('post')) {
        // Call the send_message method
-           $this->send_message( $receiverId);
+           $this->send_message($receiverId);
        }  
    }
 
