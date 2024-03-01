@@ -152,7 +152,7 @@ class MessagesController extends AppController {
 
         $conversation = $this->Message->find('all', array(
             'conditions' => $conditions,
-            'order' => array('Message.sent_at DESC'),
+            'order' => array('Message.sent_at ASC'),
         ));
 
         // debug($conversation );
