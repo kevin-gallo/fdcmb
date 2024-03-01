@@ -156,7 +156,6 @@
                         setInterval(() => {
                             location.reload()    
                         }, 2000)
-                        // window.location.href = 'http://localhost/fdcmb/messages/index';
                     },
                     error: function() {
                         alert('Failed to delete conversation. Please try again.');

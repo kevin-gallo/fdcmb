@@ -29,24 +29,8 @@ class MessagesController extends AppController {
            )
        ));
 
-        // $contacts = $this->Message->query("SELECT * FROM messages WHERE sender_id = '$userId' OR receiver_id = '$userId' GROUP BY sender_id");
-        // $ids = [];
-        // foreach($contacts as $contact) {
-        //     $ids[] = $contact['messages']['sender_id'];
-        //     $ids[] = $contact['messages']['receiver_id'];
-        // }
 
-        // // $users = $this->User->query("SELECT * FROM users WHERE id IN ");
-
-        // $users = $this->User->find('all', array(
-        //     'conditions' => array(
-        //         'id'=> $ids
-        //     )
-        // ));
-
-        // $this->set('users', $users);
         $this->set('userId', $userId); // Pass the userId to the view
-        // $this->set('senderId', $userId); // Pass the userId to the view
         $this->set('contacts', $contacts);
    }
 
@@ -99,44 +83,6 @@ class MessagesController extends AppController {
     
        $senderId = $this->Auth->user('id');
 
-    //    debug($senderId);
-
-        // $conversation = $this->Message->query("SELECT * FROM messages WHERE (sender_id = '$senderId' 
-        //                                     AND receiver_id = '$receiverId') 
-        //                                     OR (sender_id = '$receiverId' 
-        //                                     AND receiver_id = '$senderId') 
-        //                                     ORDER BY sent_at ASC"); 
-
-        // $this->paginate = array(
-        //     'order' => 'sent_at ASC',
-        //     'limit' => 10
-        // );
-
-        // $this->paginate = array(
-        //     'conditions' => array(
-        //         'OR' => array(
-        //             array(
-        //                 'AND' => array(
-        //                     'sender_id' => $senderId,
-        //                     'receiver_id' => $receiverId
-        //                 )
-        //             ),
-        //             array(
-        //                 'AND' => array(
-        //                     'sender_id' => $receiverId,
-        //                     'receiver_id' => $senderId
-        //                 )
-        //             )
-        //         )
-        //     ),
-        //     'order' => 'Message.sent_at ASC',
-        //     // 'contain' => array(
-        //     //     'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
-        //     //     'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
-        //     // ),
-        //     'limit' => 10 // Number of messages per page
-        // );
-
         $conditions = array(
             'OR' => array(
                 array(
@@ -155,9 +101,7 @@ class MessagesController extends AppController {
             'order' => array('Message.sent_at ASC'),
         ));
 
-        // debug($conversation );
 
-        // $messages = $this->paginate('Message');
 
        $this->set('conversation', $conversation);
        $this->set('senderId', $senderId);
@@ -177,8 +121,6 @@ class MessagesController extends AppController {
                 $this->request->data['Message']['sender_id'] = $senderId;
                 $this->request->data['Message']['receiver_id'] = $receiverId;
                 $this->request->data['Message']['sent_at'] = date('Y-m-d H:i:s');
-                //    $this->request->data['Message']['sender_name'] = $this->Auth->user('name');
-                //    $this->request->data['Message']['receiver_name'] = $receiverId;
 
                 if($this->Message->save($this->request->data)) {
                     $this->Flash->success(__('Message sent successfully!'));

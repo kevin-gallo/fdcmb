@@ -27,10 +27,6 @@ class User extends AppModel {
                 'rule'=> array('notBlank'),
                 'message'=> 'Password is required!'
             ),
-            // 'match'=> array(
-            //     'rule'=> array('password', 'confirm password'),
-            //     'message'=> 'Password does not match'
-            // )
         ),
         'confirm_password'=> array(
             'required'=> array(
@@ -82,18 +78,5 @@ class User extends AppModel {
 
         return true;
     }
-
-    // public function compareFields($field1, $field2) {
-    //     if (isset($this->data[$this->alias][$field1]) && isset($this->data[$this->alias][$field2])) {
-    //         return $this->data[$this->alias][$field1] === $this->data[$this->alias][$field2];
-    //     }
-    //     return false;
-    // }
-    
-    // public function updateLastLogin($userId) {
-    //     $user = $this->findById($userId);
-    //     $user[$this->alias]['last_login'] = date('Y-m-d H:i:s');
-    //     return $this->save($user);
-    // }
 }
 ?>
