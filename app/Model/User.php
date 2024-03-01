@@ -3,7 +3,7 @@ App::uses("AppModel","Model");
 App::uses("Security","Utility");
 
 class User extends AppModel {
-    public $users = "users";
+    public $useTable = "users";
 
     public $validate = array(
         'name' => array(

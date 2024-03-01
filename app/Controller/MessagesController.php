@@ -9,42 +9,40 @@ class MessagesController extends AppController {
        $user = $this->Auth->user('name');
        $this->set('name', $user);
 
-       $this->loadModel('User');
-  
        // Get the current user's ID
        $userId = $this->Auth->user('id');
   
        // Retrieve the list of contacts (users with whom the current user has conversations)
-    //    $contacts = $this->Message->find('all', array(
-    //        'fields' => array('DISTINCT receiver_id', 'Sender.id', 'Sender.name', 'Receiver.id', 'Receiver.name'),
-    //        'conditions' => array(
-    //            'OR' => array(
-    //                array('sender_id' => $userId),
-    //                array('receiver_id' => $userId)
-    //            )
-    //        ),
-    //        'contain' => array(
-    //            'Sender', // Include the Sender data
-    //            'Receiver' // Include the Receiver data
-    //        )
-    //    ));
+       $contacts = $this->Message->find('all', array(
+           'fields' => array('DISTINCT receiver_id', 'Sender.id', 'Sender.name', 'Receiver.id', 'Receiver.name'),
+           'conditions' => array(
+               'OR' => array(
+                   array('sender_id' => $userId),
+                   array('receiver_id' => $userId)
+               )
+           ),
+           'contain' => array(
+               'Sender', // Include the Sender data
+               'Receiver' // Include the Receiver data
+           )
+       ));
 
-        $contacts = $this->Message->query("SELECT * FROM messages WHERE sender_id = '$userId' OR receiver_id = '$userId' GROUP BY sender_id");
-        $ids = [];
-        foreach($contacts as $contact) {
-            $ids[] = $contact['messages']['sender_id'];
-            $ids[] = $contact['messages']['receiver_id'];
-        }
+        // $contacts = $this->Message->query("SELECT * FROM messages WHERE sender_id = '$userId' OR receiver_id = '$userId' GROUP BY sender_id");
+        // $ids = [];
+        // foreach($contacts as $contact) {
+        //     $ids[] = $contact['messages']['sender_id'];
+        //     $ids[] = $contact['messages']['receiver_id'];
+        // }
 
-        // $users = $this->User->query("SELECT * FROM users WHERE id IN ");
+        // // $users = $this->User->query("SELECT * FROM users WHERE id IN ");
 
-        $users = $this->User->find('all', array(
-            'conditions' => array(
-                'id'=> $ids
-            )
-        ));
+        // $users = $this->User->find('all', array(
+        //     'conditions' => array(
+        //         'id'=> $ids
+        //     )
+        // ));
 
-        $this->set('users', $users);
+        // $this->set('users', $users);
         $this->set('userId', $userId); // Pass the userId to the view
         $this->set('contacts', $contacts);
    }
@@ -92,21 +90,46 @@ class MessagesController extends AppController {
        $this->set('receiverId', $receiverId);
    }
 
-   public function conversation($receiverId) {
+   public function conversation( $receiverId) {
        $user = $this->Auth->user('name');
        $this->set('name', $user);
     
        $senderId = $this->Auth->user('id');
 
-        $conversation = $this->Message->query("SELECT * FROM messages WHERE (sender_id = '$senderId' 
-                                            AND receiver_id = '$receiverId') 
-                                            OR (sender_id = '$receiverId' 
-                                            AND receiver_id = '$senderId') 
-                                            ORDER BY sent_at ASC"); 
+        // $conversation = $this->Message->query("SELECT * FROM messages WHERE (sender_id = '$senderId' 
+        //                                     AND receiver_id = '$receiverId') 
+        //                                     OR (sender_id = '$receiverId' 
+        //                                     AND receiver_id = '$senderId') 
+        //                                     ORDER BY sent_at ASC"); 
+
+        // $this->paginate = array(
+        //     'order' => 'sent_at ASC',
+        //     'limit' => 10
+        // );
 
         $this->paginate = array(
-            'order' => 'sent_at ASC',
-            'limit' => 10
+            'conditions' => array(
+                'OR' => array(
+                    array(
+                        'AND' => array(
+                            'sender_id' => $senderId,
+                            'receiver_id' => $receiverId
+                        )
+                    ),
+                    array(
+                        'AND' => array(
+                            'sender_id' => $receiverId,
+                            'receiver_id' => $senderId
+                        )
+                    )
+                )
+            ),
+            'order' => 'Message.sent_at ASC',
+            // 'contain' => array(
+            //     'Sender' => array('fields' => array('id', 'name', 'profile_picture')),
+            //     'Receiver' => array('fields' => array('id', 'name', 'profile_picture'))
+            // ),
+            'limit' => 10 // Number of messages per page
         );
 
         $conversation = $this->paginate('Message');
@@ -114,34 +137,33 @@ class MessagesController extends AppController {
        $this->set('conversation', $conversation);
        $this->set('senderId', $senderId);
        $this->set('receiverId', $receiverId);
+    //    $this->set('userId', $userId);
 
        if ($this->request->is('post')) {
        // Call the send_message method
-           $this->send_message($receiverId);
+           $this->send_message( $receiverId);
        }  
    }
 
    public function send_message( $receiverId) {
        if($this->request->is('post')) {
 
-         $senderId = $this->Auth->user('id');
+                $senderId = $this->Auth->user('id');
+                $this->request->data['Message']['sender_id'] = $senderId;
+                $this->request->data['Message']['receiver_id'] = $receiverId;
+                $this->request->data['Message']['sent_at'] = date('Y-m-d H:i:s');
+                //    $this->request->data['Message']['sender_name'] = $this->Auth->user('name');
+                //    $this->request->data['Message']['receiver_name'] = $receiverId;
 
-           $this->set('senderId', $senderId);
-           $this->set('receiverId', $receiverId);
-           $this->request->data['Message']['sender_id'] = $senderId;
-           $this->request->data['Message']['receiver_id'] = $receiverId;
-           $this->request->data['Message']['sent_at'] = date('Y-m-d H:i:s');
-           $this->request->data['Message']['sender_name'] = $this->Auth->user('name');
-           $this->request->data['Message']['receiver_name'] = $receiverId;
-
-           if($this->Message->save($this->request->data)) {
-               $this->Flash->success(__('Message sent successfully!'));
-           } else {
-               $this->Flash->error(__('Failed to send message!'));
-           }
-       }
+                if($this->Message->save($this->request->data)) {
+                    $this->Flash->success(__('Message sent successfully!'));
+                } else {
+                    $this->Flash->error(__('Failed to send message!'));
+                }
+        }
 
        $this->set('senderId', $senderId);
+       $this->set('receiverId', $receiverId);
   
        return $this->redirect(array('action'=> 'conversation', $receiverId));
    }
@@ -191,7 +213,7 @@ class MessagesController extends AppController {
        }
    }
 
-    public function deleteConversation( $receiverId) {
+    public function deleteConversation($senderId, $receiverId) {
         $this->autoRender = false; // Disable rendering of view
 
         // Check if the request is AJAX
@@ -200,12 +222,12 @@ class MessagesController extends AppController {
             if ($this->Message->deleteAll(array(
                 'OR' => array(
                     array(
-                        // 'sender_id' => $senderId,
+                        'sender_id' => $senderId,
                         'receiver_id' => $receiverId
                     ),
                     array(
                         'sender_id' => $receiverId,
-                        // 'receiver_id' => $senderId
+                        'receiver_id' => $senderId
                     )
                 )
             ))) {
@@ -219,7 +241,7 @@ class MessagesController extends AppController {
         }
     }
 
-    public function search_message($senderId, $keyword) {
+    public function search_message($senderId, $receiverId, $keyword) {
         $this->autoRender = false; // Disable rendering of view
     
         // Check if the request is AJAX
@@ -230,10 +252,10 @@ class MessagesController extends AppController {
                     'OR' => array(
                         array(
                             'sender_id' => $senderId,
-                            // 'receiver_id' => $receiverId
+                            'receiver_id' => $receiverId
                         ),
                         array(
-                            // 'sender_id' => $receiverId,
+                            'sender_id' => $receiverId,
                             'receiver_id' => $senderId
                         )
                     ),

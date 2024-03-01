@@ -18,32 +18,43 @@
         <h3>Inbox</h3>
         <ul class="list-group">
             <?php
+            // debug($contacts);
             if(count($contacts) > 0) :
                 foreach ($contacts as $contact): 
-                    $receiver = "";
-                    $sender = "";
-                    foreach($users as $user) :
-                        if($contact['messages']['receiver_id'] === $user['User']['id']) {
-                            $receiver = $user['User']['name'];
-                        }
+                    // $receiver = "";
+                    // $sender = "";
+                    // foreach($users as $user) :
+                    //     if($contact['messages']['receiver_id'] === $user['User']['id']) {
+                    //         $receiver = $user['User']['name'];
+                    //     }
 
-                        if($contact['messages']['sender_id'] === $user['User']['id']) {
-                            $sender = $user['User']['name'];
-                        }
-                    endforeach;
+                    //     if($contact['messages']['sender_id'] === $user['User']['id']) {
+                    //         $sender = $user['User']['name'];
+                    //     }
+                    // endforeach;
                 ?>
                     <li class="list-group-item">
+                        <?php 
+                        
+                        if (isset($contact['Receiver']['name'])): ?>
+                            <?php 
+                            
+                                $senderId = $contact['Sender']['id'];
+                                $receiverId = $contact['Receiver']['id'];
+                            ?>
                             <?php 
                                 echo $this->Html->link(
-                                    'Conversation of ' . $sender . ' and ' . $receiver, 
+                                    'Conversation of ' . $contact['Sender']['name'] . ' and ' . $contact['Receiver']['name'],
                                     array(
                                         'controller' => 'messages',
                                         'action' => 'conversation',
-                                        $contact['messages']['receiver_id']
+                                        // $senderId,
+                                        $receiverId,
                                     ),
                                     array('class' => 'btn btn-primary'),
                                 ); 
                             ?>
+                        <?php endif;    ?>
                     </li>
                 <?php endforeach; ?>
             <?php else : ?>

@@ -104,6 +104,7 @@
                     'url' => array(
                         'controller'=> 'messages',
                         'action'=> 'send_message', 
+                        // $senderId,
                         $receiverId, // Receiver ID
                     ),
                     'class' => 'mt-3'
@@ -143,7 +144,7 @@
             if (confirmed) {
                 // Send AJAX request to delete conversation
                 $.ajax({
-                    url: 'http://localhost/fdcmb/messages/deleteConversation/<?php echo $receiverId; ?>',
+                    url: 'http://localhost/fdcmb/messages/deleteConversation/<?php echo $senderId; ?>/<?php echo $receiverId; ?>',
                     type: 'POST',
                     success: function(response) {
                         // Fade out the conversation container
@@ -171,7 +172,7 @@
 
             // Perform AJAX request to search for messages
             $.ajax({
-                url: 'http://localhost/fdcmb/messages/search_message/<?php echo $receiverId ?>/' + keyword,
+                url: 'http://localhost/fdcmb/messages/search_message/<?php echo $senderId ?>/<?php echo $receiverId ?>/' + keyword,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
@@ -197,7 +198,7 @@
                                     <img src="/fdcmb/app/webroot/img/default_profile_pic.jpg"/>
                                 </div>
                                 <div>
-                                    <h3>${senderName}</h3>
+                                    <h3>${senderName} - ${receiverName}</h3>
                                     <p>${messageContent}</p>
                                     <p>${sentAt}</p>
                                 </div>
